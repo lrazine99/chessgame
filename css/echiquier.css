@@ -1,0 +1,155 @@
+* {
+ margin: 0;
+ padding: 0;
+ }
+
+
+
+h1{
+	color: black;
+	font-size: 3rem;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+	text-align:  center;
+}
+
+
+
+
+
+#cadre{
+
+	display: flex;
+	flex-direction:  row ;
+ 	flex-wrap: wrap;
+	align-content: center;
+	height: 425px;
+	width: 435px;
+	margin: 4% auto;
+	border :solid;
+	padding: 1rem;
+	background-color: rgb(0, 0, 0);
+}
+
+
+.laterale{
+	color: white;
+	width: 3.4%;
+	flex: none;
+	text-align: center;
+	font-size: 1rem;
+}
+
+.verticale{
+	font-size: 1rem;
+	color: white;
+	width: 11.4%;
+	height: 4.2%;
+	flex: none;
+	text-align: center;
+}
+
+.aligneur{
+	width : 3.4%;
+	height : 3.5%;
+}
+
+.case{
+	height: 10.3%;
+	width: 10.1%;
+	flex: none;
+
+
+}
+img{
+	width:  95%;
+	height: 95%;
+}
+
+
+
+.marron{
+	background-color: brown;
+	border : 3px solid brown;
+	
+}
+
+.beige{
+	background-color: beige;
+	border : 3px solid beige;
+}
+
+.bleu{
+	background-color: blue;
+	border : 3px solid blue;
+}
+
+.red{
+	background-color: red  ;
+	border : 3px solid red ;
+}
+
+.orange{
+	background-color: orange  ;
+	border : 3px solid orange ;
+}
+
+.case:hover{
+	border : 3px solid blue;
+	cursor: pointer;
+
+}
+
+.case:active{
+	border : 3px solid green;
+	cursor: pointer;
+
+}
+
+@media screen and (max-width: 480px) {
+	#cadre{
+
+		height: 284px;
+		width: 290px;
+	}
+
+
+
+	.marron{
+		background-color: brown;
+		border : 2px solid brown;
+		
+	}
+	
+	.beige{
+		background-color: beige;
+		border : 2px solid beige;
+	}
+	
+	.bleu{
+		background-color: blue;
+		border : 2px solid blue;
+	}
+	
+	.red{
+		background-color: red  ;
+		border : 2px solid red ;
+	}
+	
+	.orange{
+		background-color: orange  ;
+		border : 2px solid orange ;
+	}
+	
+	.case:hover{
+		border : 2px solid blue;
+		cursor: pointer;
+	
+	}
+	
+	.case:active{
+		border : 1px solid green;
+		cursor: pointer;
+	
+	}
+	
+  }
