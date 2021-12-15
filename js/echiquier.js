@@ -1,4 +1,4 @@
-"use strict";
+ "use strict";
 
 
 
@@ -16,7 +16,7 @@
 				if(document.querySelector('#'+letters[c]+i).firstElementChild){
 				
 						document.querySelector('#'+letters[c]+i).addEventListener('click',function() 
-						{piece(document.querySelector('#'+letters[c]+i),''+letters[c]+i);},{once :true});
+						{piece(document.querySelector('#'+letters[c]+i),''+letters[c]+i, '');},{once :true});
 				    
 					
 				}
@@ -62,6 +62,8 @@
 		let secondIndex ;
 		let KingDanger = true;
 		let KingDangerArray = [];
+		let newPositionStrArrayBlanc = [];
+		let newPositionStrArrayNoir = [];
 		loadAll();
 		
 		
@@ -80,9 +82,43 @@ let range =        [ ['A1','B1','C1','D1','E1','F1','G1','H1'],
 			
 						newPosition.addEventListener('click',function() 
 						{piece(newPosition, newPositionStr);},{once :true});
-				
+						
 					}
-function piece(firstPosition, firstPositionStr)
+					function getRandomInt(max) {
+						return Math.floor(Math.random() * max);
+					  }
+					 
+
+					function player(){
+						
+							
+							  let result;
+							  let shadowRanger = [];
+							  
+
+							  range.forEach(element => {
+								  element.forEach(piece => {
+									if (document.querySelector('#'+piece).firstElementChild) {
+										shadowRanger.push(piece)
+									}
+								  });
+							  });
+							
+							result = shadowRanger.filter(shadowRanger_ => document.querySelector('#'+shadowRanger_).firstElementChild.id.includes('noir'));
+							
+								let number = result.length ;
+								let newNumber = getRandomInt(number);
+								let piecee = result[newNumber];
+							
+									piece(document.querySelector('#'+piecee),''+piecee, 'auto');
+								
+								
+							
+							  
+					}
+
+
+function piece(firstPosition, firstPositionStr, random)
 {
 	let couleur2;
 	
@@ -501,10 +537,10 @@ function piece(firstPosition, firstPositionStr)
 				fou(firstIndex, secondIndex, maxLoop, boolean, '');
 				
 			}else if(idPiece.includes('dame')){
-				queen(firstIndex, secondIndex, boolean );
+				queen(firstIndex, secondIndex, boolean,'');
 				
 			}else if(idPiece.includes('cavalier')){
-				horse(firstIndex, secondIndex, boolean);
+				horse(firstIndex, secondIndex, boolean, '');
 				
 			}else if(idPiece.includes('pion')){
 				pion(firstIndex, secondIndex, boolean, '')
@@ -517,12 +553,11 @@ function piece(firstPosition, firstPositionStr)
 		
 			let arrayCopy = [];
 		
-			console.log(KingDangerArray)
-			console.log(KingDanger)
-
+			
+			console.log(KingDangerArray);
 	if(KingDanger == false){
-		//[List2, 0,0 ,0 0]
 		if(KingDangerArray.length == 5){
+			console.log('//[List2, 0,0 ,0 0]')
 			
 			deplacementPossible.forEach(element => {
 						
@@ -542,7 +577,7 @@ function piece(firstPosition, firstPositionStr)
 
 
 		}else if(KingDangerArray.length == 3){
-			
+			console.log('list, depla, newpostionstr')
 			deplacementPossible.forEach(element => {
 						
 				if(KingDangerArray[0].includes(element)){
@@ -565,12 +600,14 @@ function piece(firstPosition, firstPositionStr)
 					
 					deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
 					deplacementPossibleAttack.push(KingDangerArray[2]);
+				}else{
+					deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
 				}
 
 		}else if(KingDangerArray.length == 2){
-			//[List, deplacementPossible]
-			console.log('araaaaaaaaaaaaaaaaaaaaaa')
+			
 			if(Array.isArray(KingDangerArray[1])){
+				console.log('/[List, deplacementPossible]')
 				
 					deplacementPossible.forEach(element => {
 						
@@ -582,7 +619,8 @@ function piece(firstPosition, firstPositionStr)
 							arrayCopy.push(element)
 						}
 					});
-				
+
+					deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
 					deplacementPossible.splice(0, deplacementPossible.length);
 					arrayCopy.forEach(element => {
 						deplacementPossible.push(element);
@@ -591,34 +629,52 @@ function piece(firstPosition, firstPositionStr)
 
 					
 				
-			//[List, newPositionStr]
-			}else{
-				console.log('araaaaaaaaaaaaaaaaaaaaaa')
-				deplacementPossible.forEach(element => {
+				}else{
+				console.log('//[depla, newPositionStr]')
+				
+
+				if(idPiece.includes('roi')){
+
+
+					deplacementPossible.forEach(element => {
+							
+						if(KingDangerArray[0].includes(element)){
+							arrayCopy.push(element)
+						}
+	
+					});
+					deplacementPossible.splice(0, deplacementPossible.length);
+					arrayCopy.forEach(element => {
+						deplacementPossible.push(element);
+					});
+					arrayCopy.splice(0, arrayCopy.length);
+
+					if(deplacementPossibleAttack.includes(KingDangerArray[1])){
 						
-					if(KingDangerArray[0].includes(element)){
-						arrayCopy.push(element)
+						deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
+						deplacementPossibleAttack.push(KingDangerArray[1]);
 					}
 
-					
-				});
-			
-				deplacementPossible.splice(0, deplacementPossible.length);
-				arrayCopy.forEach(element => {
-					deplacementPossible.push(element);
-				});
-				arrayCopy.splice(0, arrayCopy.length);
-				
-				if(deplacementPossibleAttack.includes(KingDangerArray[1])){
-					
-					deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
-					deplacementPossibleAttack.push(KingDangerArray[1]);
+
+				}else{
+
+					deplacementPossible.splice(0, deplacementPossible.length);
+					if(deplacementPossibleAttack.includes(KingDangerArray[1])){
+						
+						deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
+						deplacementPossibleAttack.push(KingDangerArray[1]);
+					}else{
+						deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
+					}
+
 				}
+			
 
 			}
+
 		}else if(KingDangerArray.length == 1){
-			//[deplacementPossible]
 			if(Array.isArray(KingDangerArray[0])){
+				console.log('deplacementPossible')
 				
 				deplacementPossible.forEach(element => {
 						
@@ -630,19 +686,22 @@ function piece(firstPosition, firstPositionStr)
 				});
 			
 				deplacementPossible.splice(0, deplacementPossible.length);
+				deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
 				arrayCopy.forEach(element => {
 					deplacementPossible.push(element);
 				});
 				arrayCopy.splice(0, arrayCopy.length);
 			
 				
-			//[newPositionStr]
 			}else{
+				console.log('newPositionStr')
 				
+				deplacementPossible.splice(0, deplacementPossible.length);
 				if(deplacementPossibleAttack.includes(KingDangerArray[0])){
-					deplacementPossible.splice(0, deplacementPossible.length);
 					deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
 					deplacementPossibleAttack.push(KingDangerArray[0]);
+				}else{
+					deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);
 				}
 			}
 		}
@@ -693,8 +752,44 @@ function piece(firstPosition, firstPositionStr)
 	deplacementPossible.forEach(element => {document.getElementById(element).classList.add('bleu');});
 	
 	deplacementPossibleAttack.forEach(element => {document.getElementById(element).classList.add('red');});
+console.log(deplacementPossible, deplacementPossibleAttack)
+	if(random === 'auto'){
 
-	
+							
+
+		function getRandomIntt(max) {
+			return Math.floor(Math.random() * max);
+		  }
+							  
+							
+		  					
+							let result = deplacementPossible.concat(deplacementPossibleAttack);
+							result.length
+							let number = result.length ;
+							let newNumber = getRandomIntt(number);
+							if(result.length == 1){
+								newNumber = 0;
+							}
+							
+							let piecee = result[newNumber];
+							
+
+								
+								while (result.length <1) {
+									return player();
+									
+								}
+								
+								deplacer(document.querySelector('#'+piecee),''+piecee);
+								
+							
+								
+							
+							  
+					
+
+
+						}
 	
 	
 		
@@ -739,6 +834,9 @@ function piece(firstPosition, firstPositionStr)
 			deplacementIndigeneBlanc.splice(0, deplacementIndigeneBlanc.length);
 			deplacementIndigeneNoir.splice(0, deplacementIndigeneNoir.length);
 			KingDangerArray.splice(0, KingDangerArray.length);
+			newPositionStrArrayBlanc.splice(0, newPositionStrArrayBlanc.length);
+			newPositionStrArrayNoir.splice(0, newPositionStrArrayNoir.length);
+
 			
 			
 			checkMat(couleur, placement, newPositionStr);
@@ -754,7 +852,9 @@ function piece(firstPosition, firstPositionStr)
 			
 			boolean = !boolean;
 			
-
+			if(boolean){
+			setTimeout(player, 0.02);
+			}
 			
 			
 			
@@ -771,6 +871,7 @@ function checkMat(couleur, placement, newPositionStr){
 	
 	
 	allMoves('');
+	
 		for(let i=0; i<8; i++)
 	{
 		range[i].forEach((element2, index) => {
@@ -790,7 +891,6 @@ function checkMat(couleur, placement, newPositionStr){
 								KingDanger = !KingDanger;
 								
 								foo.forEach(element => {
-									console.log(element)
 									KingDangerArray.push(element)
 								});
 								
@@ -798,6 +898,7 @@ function checkMat(couleur, placement, newPositionStr){
 							}else{
 								KingDanger = true;
 							}
+							console.log(KingDanger);
 						}
 
 					}else{
@@ -810,10 +911,10 @@ function checkMat(couleur, placement, newPositionStr){
 							 
 						}else{
 							if (Array.isArray(foo)) {
+								
 								KingDanger = !KingDanger;
 								
 								foo.forEach(element => {
-									console.log(element)
 									KingDangerArray.push(element)
 								});
 								foo.splice(0, foo.length)
@@ -830,28 +931,42 @@ function checkMat(couleur, placement, newPositionStr){
 		
 	
 	
-	function KingEscape(param, a, b, newPositionStr, placement){
+	function KingEscape(param, a, b, newPositionStrr, placement){
 
 		
 		deplacementPossible.splice(0, deplacementPossible.length);
-		
+		let newPositionStr;
 		
 		
 
 		if(param == 'noir'){
+			allMoves('kingMove');
 			king(a, b, true)	
 			let depla = [];
-					deplacementPossible.forEach(element => {
-						depla.push(element)
-					});
-				
+			deplacementPossible.forEach(element => {
+				depla.push(element)
+			});
+			console.log(depla)
+			if(newPositionStrArrayNoir.length == 1){
+				newPositionStr = newPositionStrArrayNoir[0];
+			}else if(newPositionStrArrayNoir.length == 2){
+				if(deplacementPossible.length == 0){
+					return 'gagne';
+				}else{
+					let result4 = [depla]
+						return result4;
+				}
+			}else{
+				return 'd';
+			}
+			console.log(newPositionStrArrayNoir)
 			let List = kingProtection(newPositionStr, 'noir', placement);
 				if(deplacementPossibleDangerNoir.includes(range[a][b])
 				 && !deplacementPossibleDangerBlanc.includes(newPositionStr) && deplacementPossible.length == 0){
 					if (List.length == 0){
-						return 'gagne'
+						return 'gagne';
 					}else{
-						window.alert('Roi noir en danger 1')
+					
 						let result = [List, 1, 2, 3, 4];
 						return result;
 					}
@@ -864,11 +979,13 @@ function checkMat(couleur, placement, newPositionStr){
 					
 					if (List.length > 0){
 						
-						window.alert('Roi noir en danger 2')
+						
 						let result = [List, depla, newPositionStr]
 						return result;
 					}else{
+						
 						let result = [ depla, newPositionStr]
+						console.table(result)
 						return result;
 					}
 					
@@ -877,14 +994,14 @@ function checkMat(couleur, placement, newPositionStr){
 					
 					if (List.length > 0){
 						
-						window.alert('Roi noir en danger manger ou fuir')
+						
 						let result = [List, newPositionStr]
+						console.table(result)
 						return result;
 					}else{
-						window.alert('Roi noir en danger manger ')
+						
 
 						let result3 = [newPositionStr]
-						console.log(result3)
 						return result3;
 					}
 					
@@ -893,22 +1010,36 @@ function checkMat(couleur, placement, newPositionStr){
 					
 					if (List.length > 0){
 						
-						window.alert('Roi noir en danger 3')
 						let result = [List, depla]
-						return result
+						console.table(result)
+						return result;
 					}else{
 						let result4 = [depla]
+						console.table(result4)
 						return result4;
 					}
 				}
 				
 		}else{
+			allMoves('kingMove');
 			king(a, b, false)
 			let depla = [];
-					deplacementPossible.forEach(element => {
-						depla.push(element)
-					});
-				
+			deplacementPossible.forEach(element => {
+				depla.push(element)
+			});
+			
+			if(newPositionStrArrayBlanc.length == 1){
+				newPositionStr = newPositionStrArrayBlanc[0];
+			}else if(newPositionStrArrayBlanc.length == 2){
+				if(deplacementPossible.length == 0){
+					return 'gagne';
+				}else{
+					let result4 = [depla]
+						return result4;
+				}
+			}else{
+				return 'd';
+			}
 				
 
 			let List2 = kingProtection(newPositionStr, 'blanc', placement)
@@ -916,9 +1047,8 @@ function checkMat(couleur, placement, newPositionStr){
 			    if((deplacementPossibleDangerBlanc.includes(range[a][b]))
 				&& !deplacementPossibleDangerNoir.includes(newPositionStr) && deplacementPossible.length == 0){
 					if (List2.length == 0){
-						return 'gagne'
+						return 'gagne';
 					}else{
-						window.alert('Roi blanc en danger 1')
 						let result = [List2, 1, 2, 3, 4];
 						return result;
 					}
@@ -928,9 +1058,8 @@ function checkMat(couleur, placement, newPositionStr){
 					
 					if (List2.length > 0){
 						
-						window.alert('Roi blanc en danger 2')
 						let result = [List2, depla, newPositionStr]
-						return result
+						return result;
 					}else{
 						let result = [ depla, newPositionStr]
 						return result;
@@ -941,13 +1070,10 @@ function checkMat(couleur, placement, newPositionStr){
 					
 					if (List2.length > 0){
 						
-						window.alert('Roi blanc en danger manger ou fuir ')
 						let result = [List2,  newPositionStr]
-						return result
+						return result;
 					}else{
-						window.alert('Roi blanc en danger manger ')
 						let result3 = [newPositionStr]
-						console.log(result3)
 						return result3;
 					}
 
@@ -956,9 +1082,8 @@ function checkMat(couleur, placement, newPositionStr){
 					
 					if (List2.length > 0){
 						
-						window.alert('Roi blanc en danger 3')
 						let result = [List2, depla]
-						return result
+						return result;
 					}else{
 						let result4 = [depla]
 						return result4;
@@ -966,7 +1091,8 @@ function checkMat(couleur, placement, newPositionStr){
 					
 					
 				}
-		}
+		
+			}
 
 	}
 	
@@ -1098,7 +1224,7 @@ function fou(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 
 	for(let i=1; i<maxLoop;i++)
 	{
-		let firstValue = (firstIndex +   i );
+		let firstValue = (firstIndex +  i);
 		let secondvalue = (secondIndex + i);
 		if((firstValue > 7 || firstValue <0) || (secondvalue > 7 || secondvalue <0)){break;}
 		if(FriendlyIdentification(range[firstValue][secondvalue],switchValue)){
@@ -1117,15 +1243,20 @@ function fou(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 			}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue][secondvalue]) == -1 &&
 			!deplacementIndigeneBlanc.includes(range[firstValue][secondvalue])){
 				deplacementPossibleAttack.push(range[firstValue][secondvalue])
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue][secondvalue])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue = firstValue + 1 ;
+				let uniqueValue2 = secondvalue + 1 ;
+				if(document.getElementById(range[firstValue][secondvalue]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0 && uniqueValue2 < 8 && uniqueValue2 > 0) ){
+					deplacementPossible.push(range[uniqueValue][uniqueValue2])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue][secondvalue]) == -1 ){
-			 console.log(range[firstValue][secondvalue]);
 			deplacementPossible.push(range[firstValue][secondvalue])
 		}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue][secondvalue]) == -1){
-			console.log(range[firstValue][secondvalue]);
 			deplacementPossible.push(range[firstValue][secondvalue])
 		}else if (king != 'king'){
 			deplacementPossible.push(range[firstValue][secondvalue])
@@ -1157,8 +1288,15 @@ function fou(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 
 				deplacementPossibleAttack.push(range[firstValue1][secondvalue1])
 				
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue1][secondvalue1])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue = firstValue1 - 1 ;
+				let uniqueValue2 = secondvalue1 - 1 ;
+				if(document.getElementById(range[firstValue1][secondvalue1]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0 && uniqueValue2 < 8 && uniqueValue2 > 0) ){
+					deplacementPossible.push(range[uniqueValue][uniqueValue2])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue1][secondvalue1]) == -1 ){
@@ -1192,16 +1330,23 @@ function fou(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 			}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue2][secondvalue2]) == -1&& 
 			!deplacementIndigeneBlanc.includes(range[firstValue2][secondvalue2])){
 				deplacementPossibleAttack.push(range[firstValue2][secondvalue2])
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue2][secondvalue2])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue  = firstValue2  - 1 ;
+				let uniqueValue2 = secondvalue2 + 1 ;
+				if(document.getElementById(range[firstValue2][secondvalue2]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0 && uniqueValue2 < 8 && uniqueValue2 > 0) ){
+					deplacementPossible.push(range[uniqueValue][uniqueValue2])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue2][secondvalue2]) == -1 ){
 			deplacementPossible.push(range[firstValue2][secondvalue2])
-			console.log(range[firstValue2][secondvalue2]);
+		
 		}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue2][secondvalue2]) == -1){
 			deplacementPossible.push(range[firstValue2][secondvalue2])
-			console.log(range[firstValue2][secondvalue2]);
+		
 		}else if (king != 'king'){
 			deplacementPossible.push(range[firstValue2][secondvalue2])
 		}
@@ -1228,8 +1373,16 @@ function fou(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 			}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue3][secondvalue3]) == -1&& 
 			!deplacementIndigeneBlanc.includes(range[firstValue3][secondvalue3])){
 				deplacementPossibleAttack.push(range[firstValue3][secondvalue3])
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue3][secondvalue3])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue  = firstValue3  + 1 ;
+				let uniqueValue2 = secondvalue3 - 1 ;
+				
+				if(document.getElementById(range[firstValue3][secondvalue3]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0 && uniqueValue2 < 8 && uniqueValue2 > 0) ){
+					deplacementPossible.push(range[uniqueValue][uniqueValue2])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue3][secondvalue3]) == -1 ){
@@ -1278,15 +1431,21 @@ function tour(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 			&& !deplacementIndigeneBlanc.includes(range[firstValue][secondvalue]) ){
 
 				deplacementPossibleAttack.push(range[firstValue][secondvalue])
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue][secondvalue])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue = firstValue + 1 ;
+				if(document.getElementById(range[firstValue][secondvalue]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0)){
+					deplacementPossible.push(range[uniqueValue][secondvalue])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue][secondvalue]) == -1 ){
-			 console.log(range[firstValue][secondvalue])
+			 
 			deplacementPossible.push(range[firstValue][secondvalue])
 		}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue][secondvalue]) == -1){
-			console.log(range[firstValue][secondvalue])	 
+			
 			deplacementPossible.push(range[firstValue][secondvalue])
 		}else if (king != 'king'){
 			deplacementPossible.push(range[firstValue][secondvalue])
@@ -1313,15 +1472,21 @@ function tour(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 			}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue1][secondvalue1]) == -1
 			&& !deplacementIndigeneBlanc.includes(range[firstValue1][secondvalue1]) ){
 				deplacementPossibleAttack.push(range[firstValue1][secondvalue1])
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue1][secondvalue1])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue = firstValue1 - 1 ;
+				if(document.getElementById(range[firstValue1][secondvalue1]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0)){
+					deplacementPossible.push(range[uniqueValue][secondvalue1])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue1][secondvalue1]) == -1 ){
 			deplacementPossible.push(range[firstValue1][secondvalue1])
-			console.log(range[firstValue1][secondvalue1]);
+			
 		}else if( king == 'king' && switchValue && deplacementPossibleBlanc.indexOf(range[firstValue1][secondvalue1]) == -1){
-			console.log(range[firstValue1][secondvalue1]);
+			
 			deplacementPossible.push(range[firstValue1][secondvalue1])
 		}else if (king != 'king'){
 			deplacementPossible.push(range[firstValue1][secondvalue1])
@@ -1350,8 +1515,14 @@ function tour(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 			&& !deplacementIndigeneBlanc.includes(range[firstValue2][secondvalue2]) ){
 
 				deplacementPossibleAttack.push(range[firstValue2][secondvalue2])
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue2][secondvalue2])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue = secondvalue2 + 1 ;
+				if(document.getElementById(range[firstValue2][secondvalue2]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0)){
+					deplacementPossible.push(range[firstValue2][uniqueValue])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue2][secondvalue2]) == -1 ){
@@ -1389,8 +1560,14 @@ function tour(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 			&& !deplacementIndigeneBlanc.includes(range[firstValue3][secondvalue3]) ){
 				deplacementPossibleAttack.push(range[firstValue3][secondvalue3])
 
-			}else if (king != 'king'){
+			}else if (king == ''){
 				deplacementPossibleAttack.push(range[firstValue3][secondvalue3])
+			}else if (king == 'kingLastEscape'){
+				let uniqueValue = secondvalue3 - 1 ;
+				if(document.getElementById(range[firstValue3][secondvalue3]).firstElementChild.id.includes('roi')
+				&& (uniqueValue < 8 && uniqueValue > 0)){
+					deplacementPossible.push(range[firstValue3][uniqueValue])
+				}
 			}
 			break;
 		}if( king == 'king' && !switchValue && deplacementPossibleNoir.indexOf(range[firstValue3][secondvalue3]) == -1 ){
@@ -1408,7 +1585,7 @@ function tour(firstIndex, secondIndex, maxLoop, booleanParamater, king){
 	dangerPiece = true;
 }
 
-function horse(firstIndex, secondIndex, booleanParamater){
+function horse(firstIndex, secondIndex, booleanParamater, param){
 
 	let firstValue = firstIndex;
 	let secondvalue = secondIndex;
@@ -1429,8 +1606,6 @@ function horse(firstIndex, secondIndex, booleanParamater){
 			secondvalue -= (i+3);
 			continue}
 		if(FriendlyIdentification(range[firstValue][secondvalue],switchValue)){
-			firstValue -= (i+2);
-			secondvalue -= (i+3);
 			if( (firstValue >=0 && firstValue < 8) && (secondvalue >=0 && secondvalue < 8)  ){
 				if (switchValue) {
 					deplacementIndigeneNoir.push(range[firstValue][secondvalue])
@@ -1438,6 +1613,8 @@ function horse(firstIndex, secondIndex, booleanParamater){
 					deplacementIndigeneBlanc.push(range[firstValue][secondvalue])
 				}
 			}
+			firstValue -= (i+2);
+			secondvalue -= (i+3);
 			continue};
 		if(document.getElementById(range[firstValue][secondvalue]).firstElementChild){
 			deplacementPossibleAttack.push(range[firstValue][secondvalue])
@@ -1458,8 +1635,6 @@ function horse(firstIndex, secondIndex, booleanParamater){
 			secondvalue2 -= 6;
 			continue}
 		if(FriendlyIdentification(range[firstValue2][secondvalue2],switchValue)){
-			firstValue2 -= 1;
-			secondvalue2 -= 6;
 			if( (firstValue2 >=0 && firstValue2 < 8) && (secondvalue2 >=0 && secondvalue2 < 8)  ){
 				if (switchValue) {
 					deplacementIndigeneNoir.push(range[firstValue2][secondvalue2])
@@ -1467,6 +1642,8 @@ function horse(firstIndex, secondIndex, booleanParamater){
 					deplacementIndigeneBlanc.push(range[firstValue2][secondvalue2])
 				}
 			}
+			firstValue2 -= 1;
+			secondvalue2 -= 6;
 			continue};
 		if(document.getElementById(range[firstValue2][secondvalue2]).firstElementChild){
 			deplacementPossibleAttack.push(range[firstValue2][secondvalue2])
@@ -1488,8 +1665,6 @@ function horse(firstIndex, secondIndex, booleanParamater){
 			secondvalue3 += (i+6);
 			continue}
 		if(FriendlyIdentification(range[firstValue3][secondvalue3],switchValue) ){
-			firstValue3 += 2;
-			secondvalue3 += (i+6);
 			if( (firstValue3 >=0 && firstValue3 < 8) && (secondvalue3 >=0 && secondvalue3 < 8)  ){
 				if (switchValue) {
 					deplacementIndigeneNoir.push(range[firstValue3][secondvalue3])
@@ -1497,6 +1672,8 @@ function horse(firstIndex, secondIndex, booleanParamater){
 					deplacementIndigeneBlanc.push(range[firstValue3][secondvalue3])
 				}
 			}
+			firstValue3 += 2;
+			secondvalue3 += (i+6);
 			continue};
 			
 		if(document.getElementById(range[firstValue3][secondvalue3]).firstElementChild){
@@ -1518,8 +1695,6 @@ function horse(firstIndex, secondIndex, booleanParamater){
 			secondvalue4 += (i+3);
 			continue}
 		if(FriendlyIdentification(range[firstValue4][secondvalue4],switchValue)){
-			firstValue4 += (i+2);
-			secondvalue4 += (i+3);
 			if( (firstValue4 >=0 && firstValue4 < 8) && (secondvalue4 >=0 && secondvalue4 < 8)  ){
 				if (switchValue) {
 					deplacementIndigeneNoir.push(range[firstValue4][secondvalue4])
@@ -1527,6 +1702,8 @@ function horse(firstIndex, secondIndex, booleanParamater){
 					deplacementIndigeneBlanc.push(range[firstValue4][secondvalue4])
 				}
 			}
+			firstValue4 += (i+2);
+			secondvalue4 += (i+3);
 			continue};
 		if(document.getElementById(range[firstValue4][secondvalue4]).firstElementChild){
 			deplacementPossibleAttack.push(range[firstValue4][secondvalue4])
@@ -1543,11 +1720,16 @@ function horse(firstIndex, secondIndex, booleanParamater){
 }
 
 
-function queen(firstIndex, secondIndex, booleanParamater)
+function queen(firstIndex, secondIndex, booleanParamater, param)
 {
 	let booleanSet = booleanParamater;
 	let maxLoop = 8;
-	fou(firstIndex, secondIndex, maxLoop, booleanSet, ''), tour(firstIndex, secondIndex, maxLoop, booleanSet, '');	
+	if(param === 'kingLastEscape'){
+		fou(firstIndex, secondIndex, maxLoop, booleanSet, 'kingLastEscape'), tour(firstIndex, secondIndex, maxLoop, booleanSet, 'kingLastEscape');	
+	}else{
+		fou(firstIndex, secondIndex, maxLoop, booleanSet, ''), tour(firstIndex, secondIndex, maxLoop, booleanSet, '');	
+
+	}
 }
 
 function king(firstIndex, secondIndex, booleanParamater)
@@ -1560,10 +1742,7 @@ function king(firstIndex, secondIndex, booleanParamater)
 
 function allMoves(param){
 
-	deplacementPossibleDangerBlanc.splice(0, deplacementPossibleDangerBlanc.length);
-	deplacementPossibleDangerNoir.splice(0, deplacementPossibleDangerNoir.length);
-	deplacementPossibleBlanc.splice(0, deplacementPossibleBlanc.length);
-	deplacementPossibleNoir.splice(0, deplacementPossibleNoir.length);
+	
 	
 	
 	for(let i=0; i<8; i++)
@@ -1579,12 +1758,18 @@ function allMoves(param){
 				
 				if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('noir')){
 					
-					tour(i, a, maxLoop, true, '');
 					if(param == 'kingMove'){
+						tour(i, a, maxLoop, true, 'kingLastEscape');
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
 					}else{
+						tour(i, a, maxLoop, true, '');
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerBlanc.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roiblanc')){
+								newPositionStrArrayBlanc.push(range[i][a]);
+							}
+						});
 					}
 						deplacementPossible.splice(0,  deplacementPossible.length);
 						deplacementPossibleAttack.splice(0,  deplacementPossibleAttack.length);					
@@ -1593,12 +1778,18 @@ function allMoves(param){
 					
 				}else if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('blanc')){
 					
-					tour(i, a, maxLoop, false, '')
 					if(param == 'kingMove'){
+						tour(i, a, maxLoop, false, 'kingLastEscape')
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
 					}else{
+						tour(i, a, maxLoop, false, '')
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerNoir.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roinoir')){
+								newPositionStrArrayNoir.push(range[i][a]);
+							}
+						});
 					}
 					deplacementPossible.splice(0,  deplacementPossible.length);
 					deplacementPossibleAttack.splice(0,  deplacementPossibleAttack.length);
@@ -1611,12 +1802,18 @@ function allMoves(param){
 				
 				if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('noir')){
 					
-					fou(i, a, maxLoop, true, '');
 					if(param == 'kingMove'){
+						fou(i, a, maxLoop, true, 'kingLastEscape');
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
 					}else{
+						fou(i, a, maxLoop, true, '');
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerBlanc.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roiblanc')){
+								newPositionStrArrayBlanc.push(range[i][a]);
+							}
+						});
 					}
 					deplacementPossible.splice(0,  deplacementPossible.length);
 					deplacementPossibleAttack.splice(0,  deplacementPossibleAttack.length);					
@@ -1625,12 +1822,18 @@ function allMoves(param){
 					
 				}else if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('blanc')){
 					
-					fou(i, a, maxLoop, false)
 					if(param == 'kingMove'){
+						fou(i, a, maxLoop, false, 'kingLastEscape');
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
 					}else{
+						fou(i, a, maxLoop, false, '');
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerNoir.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roinoir')){
+								newPositionStrArrayNoir.push(range[i][a]);
+							}
+						});
 					}
 					deplacementPossible.splice(0,  deplacementPossible.length);
 					deplacementPossibleAttack.splice(0,  deplacementPossibleAttack.length);
@@ -1644,12 +1847,18 @@ function allMoves(param){
 				if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('noir')){
 					
 				
-					queen(i, a,  true);
 					if(param == 'kingMove'){
+						queen(i, a,  true, 'kingLastEscape');
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
 					}else{
+						queen(i, a,  true, '');
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerBlanc.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roiblanc')){
+								newPositionStrArrayBlanc.push(range[i][a]);
+							}
+						});
 					}
 					
 					deplacementPossible.splice(0,  deplacementPossible.length);
@@ -1659,13 +1868,19 @@ function allMoves(param){
 					
 				}else if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('blanc')){
 					
-					queen(i, a, false)
 					
 					if(param == 'kingMove'){
+						queen(i, a, false, 'kingLastEscape')
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
 					}else{
+						queen(i, a, false, '')
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerNoir.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roinoir')){
+								newPositionStrArrayNoir.push(range[i][a]);
+							}
+						});
 					}
 					
 					deplacementPossible.splice(0,  deplacementPossible.length);
@@ -1678,12 +1893,18 @@ function allMoves(param){
 			}else if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('cavalier')){
 				if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('noir')){
 					
-					horse(i, a,true);
 					if(param == 'kingMove'){
+						horse(i, a,true, 'king');
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
 					}else{
+						horse(i, a,true, '');
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerBlanc.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roiblanc')){
+								newPositionStrArrayBlanc.push(range[i][a]);
+							}
+						});
 					}
 					deplacementPossible.splice(0,  deplacementPossible.length);
 					deplacementPossibleAttack.splice(0,  deplacementPossibleAttack.length);					
@@ -1692,12 +1913,18 @@ function allMoves(param){
 					
 				}else if(document.importNode(document.getElementById(range[i][a]).firstElementChild).id.includes('blanc')){
 					
-					horse(i, a, false)
 					if(param == 'kingMove'){
+						horse(i, a, false, 'king')
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
 					}else{
+						horse(i, a, false, '')
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerNoir.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roinoir')){
+								newPositionStrArrayNoir.push(range[i][a]);
+							}
+						});
 					}
 					deplacementPossible.splice(0,  deplacementPossible.length);
 					deplacementPossibleAttack.splice(0,  deplacementPossibleAttack.length);
@@ -1716,6 +1943,11 @@ function allMoves(param){
 						pion(i, a, true, '');
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerBlanc.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleNoir.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roiblanc')){
+								newPositionStrArrayBlanc.push(range[i][a]);
+							}
+						});
 					}
 					deplacementPossible.splice(0,  deplacementPossible.length);
 					deplacementPossibleAttack.splice(0, deplacementPossibleAttack.length);					
@@ -1732,6 +1964,11 @@ function allMoves(param){
 						pion(i, a, false, '');
 						deplacementPossibleAttack.forEach(element => deplacementPossibleDangerNoir.push(element));
 						deplacementPossible.forEach(element => deplacementPossibleBlanc.push(element));
+						deplacementPossibleAttack.forEach(element => {
+							if(document.importNode(document.getElementById(element).firstElementChild).id.includes('roinoir')){
+								newPositionStrArrayNoir.push(range[i][a]);
+							}
+						});
 					}
 					deplacementPossible.splice(0,  deplacementPossible.length);
 					deplacementPossibleAttack.splice(0,  deplacementPossibleAttack.length);
@@ -1809,7 +2046,8 @@ function allMoves(param){
 					
 				});
 			});
-			
+			console.log(newPositionStr)
+			if(document.importNode(document.getElementById(newPositionStr).firstElementChild)){
 			if (document.importNode(document.getElementById(newPositionStr).firstElementChild).id.includes('tour') ||
 			document.importNode(document.getElementById(newPositionStr).firstElementChild).id.includes( 'dame'))  {
 				
@@ -1818,8 +2056,7 @@ function allMoves(param){
 					if (secondIndex - secondIndex1 >= 0) {		
 						for (let index = secondIndex; index > secondIndex1; index--) {
 
-							console.log(range[firstIndex][index]);
-							console.table(DeplacementPossibleColor)
+							
 							if(DeplacementPossibleColor.includes(range[firstIndex][index])  ){
 								arraList.push(range[firstIndex][index])
 							}
@@ -1828,7 +2065,7 @@ function allMoves(param){
 					}else{
 						for (let index = secondIndex; index < secondIndex1; index++) {
 
-							console.log(range[firstIndex][index]);
+				
 							if(DeplacementPossibleColor.includes(range[firstIndex][index])  ){
 								arraList.push(range[firstIndex][index])
 							}
@@ -1841,7 +2078,7 @@ function allMoves(param){
 					
 					if (firstIndex - firstIndex1 >= 0) {		
 						for (let index = firstIndex; index > firstIndex1; index--) { 
-							console.log(range[index][secondIndex]);
+							
 							if(DeplacementPossibleColor.includes(range[index][secondIndex])  ){
 								arraList.push(range[index][secondIndex])
 							}
@@ -1849,8 +2086,7 @@ function allMoves(param){
 						}
 					}else{
 						for (let index = firstIndex; index < firstIndex1; index++) { 
-							console.log(range[index][secondIndex]);
-							console.log(DeplacementPossibleColor);
+							
 							if(DeplacementPossibleColor.includes(range[index][secondIndex])  ){
 
 								arraList.push(range[index][secondIndex]) 
@@ -1871,8 +2107,7 @@ function allMoves(param){
 	
 				 differenceBis1 = firstIndex - firstIndex1;   // 4 - 7 = -4     7-4 =  4
 				 differenceBis2 = secondIndex - secondIndex1; // 7 - 4 =  4     4-7 = -4
-				console.log(firstIndex , firstIndex1);    
-				console.log(secondIndex , secondIndex1);  
+				
 
 				if(difference1 > 0 && difference2 > 0){
                                                  
@@ -1880,7 +2115,7 @@ function allMoves(param){
 						let number1 = index+firstIndex1;
 						let number2 = index+secondIndex1;
 					
-						console.log(range[number1][number2]);
+					
 						if(DeplacementPossibleColor.includes(range[number1][number2])){
 							arraList.push(range[number1][number2])
 						}
@@ -1890,7 +2125,7 @@ function allMoves(param){
 					for (let index = 1; index < firstIndex1 - firstIndex ; index++) {
 						let number1 = firstIndex+index;
 						let number2 = secondIndex+index;
-						console.log(range[number1][number2]);
+					
 						if(DeplacementPossibleColor.includes(range[number1][number2])){
 							arraList.push(range[number1][number2])
 						}
@@ -1901,7 +2136,7 @@ function allMoves(param){
                         let number1 = index+firstIndex1;
 						let number2 = secondIndex1 - index;
 					
-						console.log(range[number1][number2]);
+		
 						if(DeplacementPossibleColor.includes(range[number1][number2])){
 							arraList.push(range[number1][number2])
 						}
@@ -1914,7 +2149,6 @@ function allMoves(param){
 						let number1 = firstIndex1 - index;
 						let number2 = index+secondIndex1;
 					
-						console.log(range[number1][number2]);
 						if(DeplacementPossibleColor.includes(range[number1][number2])){
 							arraList.push(range[number1][number2])
 						}
@@ -1927,7 +2161,7 @@ function allMoves(param){
 
 
 			}
-		
+			}
 		
 		return arraList;
 	}
